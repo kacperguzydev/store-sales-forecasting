@@ -1,0 +1,21 @@
+# data
+data/
+*.csv
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# models
+models/*.pkl
+models/*.joblib
+
+# IDE
+.idea/
+.vscode/
+
+# env vars
+.env

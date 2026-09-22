@@ -1,0 +1,34 @@
+# API
+fastapi
+uvicorn[standard]
+pydantic
+
+# data / analysis
+pandas
+numpy
+scikit-learn
+
+# modeling
+lightgbm
+optuna
+shap
+
+# time series
+statsmodels
+prophet
+
+# visualization
+matplotlib
+seaborn
+plotly
+
+# dashboard
+streamlit
+
+# tests
+pytest
+pytest-cov
+
+# other
+python-dotenv
+requests
