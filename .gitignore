@@ -1,6 +1,6 @@
 # data
 data/
-*.csv
+data/*.csv
 
 # python
 __pycache__/
