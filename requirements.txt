@@ -12,6 +12,8 @@ scikit-learn
 lightgbm
 optuna
 shap
+xgboost
+catboost
 
 # time series
 statsmodels

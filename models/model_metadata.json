@@ -1,0 +1,309 @@
+{
+  "feature_cols": [
+    "store_nbr",
+    "family",
+    "onpromotion",
+    "day_of_week",
+    "day_of_month",
+    "month",
+    "year",
+    "is_weekend",
+    "day_of_year",
+    "is_holiday",
+    "is_work_day",
+    "oil_price",
+    "city",
+    "state",
+    "type",
+    "cluster",
+    "lag_7",
+    "lag_14",
+    "lag_28",
+    "lag_364",
+    "rolling_mean_7",
+    "rolling_std_7",
+    "rolling_mean_28",
+    "rolling_std_28",
+    "promo_typical",
+    "promo_relative"
+  ],
+  "categorical_cols": [
+    "store_nbr",
+    "family",
+    "city",
+    "state",
+    "type",
+    "cluster"
+  ],
+  "seeds": [
+    42,
+    123,
+    777
+  ],
+  "ensemble_weights": {
+    "xgboost": 0.7,
+    "lightgbm": 0.3
+  },
+  "zero_force_combos": [
+    [
+      1,
+      "BABY CARE"
+    ],
+    [
+      9,
+      "BOOKS"
+    ],
+    [
+      10,
+      "BOOKS"
+    ],
+    [
+      10,
+      "LAWN AND GARDEN"
+    ],
+    [
+      11,
+      "BOOKS"
+    ],
+    [
+      12,
+      "BOOKS"
+    ],
+    [
+      12,
+      "LAWN AND GARDEN"
+    ],
+    [
+      13,
+      "BABY CARE"
+    ],
+    [
+      13,
+      "BOOKS"
+    ],
+    [
+      13,
+      "LAWN AND GARDEN"
+    ],
+    [
+      14,
+      "BABY CARE"
+    ],
+    [
+      14,
+      "BOOKS"
+    ],
+    [
+      14,
+      "LAWN AND GARDEN"
+    ],
+    [
+      15,
+      "BOOKS"
+    ],
+    [
+      15,
+      "LAWN AND GARDEN"
+    ],
+    [
+      16,
+      "BOOKS"
+    ],
+    [
+      16,
+      "LADIESWEAR"
+    ],
+    [
+      16,
+      "LAWN AND GARDEN"
+    ],
+    [
+      17,
+      "BOOKS"
+    ],
+    [
+      17,
+      "LAWN AND GARDEN"
+    ],
+    [
+      18,
+      "BOOKS"
+    ],
+    [
+      19,
+      "BOOKS"
+    ],
+    [
+      19,
+      "LAWN AND GARDEN"
+    ],
+    [
+      20,
+      "BOOKS"
+    ],
+    [
+      21,
+      "BOOKS"
+    ],
+    [
+      22,
+      "BOOKS"
+    ],
+    [
+      22,
+      "LAWN AND GARDEN"
+    ],
+    [
+      23,
+      "BABY CARE"
+    ],
+    [
+      25,
+      "LADIESWEAR"
+    ],
+    [
+      28,
+      "BOOKS"
+    ],
+    [
+      28,
+      "LADIESWEAR"
+    ],
+    [
+      29,
+      "BOOKS"
+    ],
+    [
+      29,
+      "LADIESWEAR"
+    ],
+    [
+      30,
+      "BOOKS"
+    ],
+    [
+      30,
+      "LAWN AND GARDEN"
+    ],
+    [
+      31,
+      "BOOKS"
+    ],
+    [
+      32,
+      "BOOKS"
+    ],
+    [
+      32,
+      "LADIESWEAR"
+    ],
+    [
+      32,
+      "LAWN AND GARDEN"
+    ],
+    [
+      33,
+      "BOOKS"
+    ],
+    [
+      33,
+      "LADIESWEAR"
+    ],
+    [
+      33,
+      "LAWN AND GARDEN"
+    ],
+    [
+      34,
+      "BOOKS"
+    ],
+    [
+      35,
+      "BOOKS"
+    ],
+    [
+      35,
+      "LADIESWEAR"
+    ],
+    [
+      35,
+      "LAWN AND GARDEN"
+    ],
+    [
+      36,
+      "BOOKS"
+    ],
+    [
+      39,
+      "BOOKS"
+    ],
+    [
+      40,
+      "BOOKS"
+    ],
+    [
+      40,
+      "LADIESWEAR"
+    ],
+    [
+      43,
+      "BOOKS"
+    ],
+    [
+      43,
+      "LADIESWEAR"
+    ],
+    [
+      44,
+      "BABY CARE"
+    ],
+    [
+      45,
+      "BABY CARE"
+    ],
+    [
+      46,
+      "BABY CARE"
+    ],
+    [
+      47,
+      "BABY CARE"
+    ],
+    [
+      48,
+      "BABY CARE"
+    ],
+    [
+      49,
+      "BABY CARE"
+    ],
+    [
+      50,
+      "BABY CARE"
+    ],
+    [
+      51,
+      "BABY CARE"
+    ],
+    [
+      52,
+      "BABY CARE"
+    ],
+    [
+      52,
+      "BOOKS"
+    ],
+    [
+      54,
+      "BOOKS"
+    ],
+    [
+      54,
+      "LADIESWEAR"
+    ],
+    [
+      54,
+      "LAWN AND GARDEN"
+    ]
+  ]
+}

@@ -9,13 +9,17 @@ __pycache__/
 venv/
 env/
 
-# models
-models/*.pkl
-models/*.joblib
-
 # IDE
 .idea/
 .vscode/
 
 # env vars
 .env
+
+# jupyter checkpoints
+notebooks/.ipynb_checkpoints/
+notebooks/**/.ipynb_checkpoints/
+
+# catboost training logs
+notebooks/catboost_info/
+notebooks/**/catboost_info/
