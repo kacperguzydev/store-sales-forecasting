@@ -36,9 +36,7 @@
     "cluster"
   ],
   "seeds": [
-    42,
-    123,
-    777
+    42
   ],
   "ensemble_weights": {
     "xgboost": 0.7,
