@@ -1,10 +1,13 @@
 # Store Sales Forecasting
 
-Time series forecasting of daily grocery sales for Corporación Favorita (Ecuador), built as an end-to-end ML project: EDA, feature engineering, model comparison, a deployed prediction API, tests, CI, and a dashboard.
+Time series forecasting of daily grocery sales for Corporación Favorita (Ecuador), built as an end-to-end ML project: EDA, feature engineering, model comparison, a deployed prediction API, a live dashboard, tests, and CI.
 
+- **Live dashboard:** https://store-sales-forecasting-dashboard.onrender.com/
+- **Live API docs:** https://store-sales-forecasting.onrender.com/docs
 - Competition: [Store Sales - Time Series Forecasting (Kaggle)](https://www.kaggle.com/competitions/store-sales-time-series-forecasting)
-- Live API docs: https://store-sales-forecasting.onrender.com/docs (free tier, the first request after idle can take about a minute)
 - Metric: RMSLE, horizon: 16 days, 54 stores x 33 product families (1,782 parallel series)
+
+Both services run on the Render free tier and sleep after 15 minutes without traffic. The first request after idle can take about a minute, and using the dashboard after a long pause wakes up two services in a row.
 
 ## Results
 
@@ -24,14 +27,14 @@ store-sales-forecasting/
 │   ├── 01_eda.ipynb                    # exploration of all 7 source files
 │   ├── 02_feature_engineering.ipynb    # calendar, holidays, oil, lags, rolling stats, promo features
 │   ├── 03_baseline_model.ipynb         # baseline, zero-forcing, recursive validation, direct-horizon experiment
-│   ├── 04_model_comparison.ipynb       # 8 models, ensembles, weight search, multi-seed
+│   ├── 04_model_comparison.ipynb       # model comparison, ensembles, weight search, multi-seed
 │   └── 05_export_for_api.ipynb         # exports models, metadata and data bundle for the API
 ├── api/                                # FastAPI service (main.py + small data bundle)
-├── dashboard/                          # Streamlit app calling the API
+├── dashboard/                          # Streamlit app calling the API (own requirements.txt)
 ├── models/                             # LightGBM + XGBoost models, metadata, drift reference
 ├── tests/                              # pytest suite for the API
 ├── .github/workflows/tests.yml         # CI: pytest on every push
-├── Dockerfile
+├── Dockerfile                          # builds the API image (the dashboard is deployed separately)
 └── requirements.txt
 ```
 
@@ -52,7 +55,7 @@ store-sales-forecasting/
 
 **Post-processing.** Series with no sales in the last 365 days are forced to exactly zero (65 store x family combinations).
 
-**Models.** Eight models compared under the same recursive validation: XGBoost, LightGBM, CatBoost, HistGradientBoosting, Random Forest, Extra Trees (Ridge/ElasticNet were dropped after they diverged). The best result came from a weighted blend of the two best models (70% XGBoost, 30% LightGBM), and adding weaker models made the ensemble worse. Hyperparameters for LightGBM came from Optuna (30 trials).
+**Models.** Six models compared under the same recursive validation: XGBoost, LightGBM, CatBoost, HistGradientBoosting, Random Forest, Extra Trees (Ridge and ElasticNet were dropped after their predictions overflowed). The best result came from a weighted blend of the two best models (70% XGBoost, 30% LightGBM), and adding weaker models made the ensemble worse. Hyperparameters for LightGBM came from Optuna (30 trials).
 
 ## What went wrong along the way
 
@@ -93,6 +96,10 @@ The API builds lag, rolling and promotion features from a bundled 400-day histor
 - The API predicts a single date and does not run the recursive multi-day loop used for the Kaggle submission.
 - The API uses one seed, while the Kaggle score (0.50266) used a 3-seed average.
 
+## Dashboard
+
+A Streamlit app ([live](https://store-sales-forecasting-dashboard.onrender.com/)) that shows the last 120 days of sales for a chosen store and product family, calls the deployed API for a prediction, and displays the drift warnings returned by the API. It reads the bundled `api/history.parquet` for the chart and is deployed as a separate Render web service.
+
 ## Run it
 
 ```bash
@@ -105,10 +112,11 @@ uvicorn api.main:app --reload
 pytest tests/ -v
 
 # dashboard (uses the deployed API by default)
+pip install -r dashboard/requirements.txt
 streamlit run dashboard/app.py
 # to use a local API instead:  API_URL=http://127.0.0.1:8000 streamlit run dashboard/app.py
 
-# Docker
+# Docker (API only)
 docker build -t store-sales-api .
 docker run -p 8000:8000 store-sales-api
 ```
