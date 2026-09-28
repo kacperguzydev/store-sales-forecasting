@@ -4,8 +4,12 @@ import pandas as pd
 import numpy as np
 import joblib
 import json
+import time
+import logging
 from pathlib import Path
-from datetime import datetime
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+logger = logging.getLogger("store-sales-api")
 
 app = FastAPI(title="Store Sales Forecasting API")
 
@@ -15,6 +19,9 @@ MODELS_DIR = BASE_DIR.parent / "models"
 # --- Load resources once at startup ---
 with open(MODELS_DIR / "model_metadata.json") as f:
     metadata = json.load(f)
+
+with open(MODELS_DIR / "drift_reference.json") as f:
+    DRIFT_REF = json.load(f)
 
 FEATURE_COLS = metadata["feature_cols"]
 CATEGORICAL_COLS = metadata["categorical_cols"]
@@ -61,6 +68,7 @@ class PredictionResponse(BaseModel):
     store_nbr: int
     family: str
     date: str
+    drift_warnings: list[str] = []
 
 
 # --- Feature computation for a single request ---
@@ -164,6 +172,20 @@ def predict_ensemble(features: pd.DataFrame, store_nbr: int, family: str) -> flo
     return float(max(final_pred, 0.0))
 
 
+# --- Drift check ---
+def check_drift(family: str, features: pd.DataFrame, z_threshold: float = 4.0) -> list[str]:
+    """Flag input features that fall far outside the training distribution."""
+    warnings = []
+    row = features.iloc[0]
+    checks = list(DRIFT_REF["per_family"].get(family, {}).items()) + list(DRIFT_REF["global"].items())
+    for name, ref in checks:
+        if ref["std"] and ref["std"] > 0:
+            z = (float(row[name]) - ref["mean"]) / ref["std"]
+            if abs(z) > z_threshold:
+                warnings.append(f"{name}: z-score {z:.1f} vs training distribution")
+    return warnings
+
+
 # --- Endpoints ---
 @app.get("/")
 def health_check():
@@ -175,8 +197,10 @@ def health_check():
 def predict(request: PredictionRequest):
     """
     Predicts sales for a given store, product family, and date using
-    a LightGBM + XGBoost multi-seed ensemble trained on historical data.
+    a LightGBM + XGBoost ensemble trained on historical data.
     """
+    start = time.perf_counter()
+
     try:
         target_date = pd.Timestamp(request.date)
     except ValueError:
@@ -187,10 +211,26 @@ def predict(request: PredictionRequest):
 
     features = build_features(request.store_nbr, request.family, target_date, request.onpromotion)
     prediction = predict_ensemble(features, request.store_nbr, request.family)
+    drift_warnings = check_drift(request.family, features)
+
+    latency_ms = (time.perf_counter() - start) * 1000
+    logger.info(json.dumps({
+        "event": "prediction",
+        "store_nbr": request.store_nbr,
+        "family": request.family,
+        "date": request.date,
+        "onpromotion": request.onpromotion,
+        "predicted_sales": round(prediction, 2),
+        "latency_ms": round(latency_ms, 1),
+        "drift_warnings": drift_warnings,
+    }))
+    if drift_warnings:
+        logger.warning(f"Possible data drift: {drift_warnings}")
 
     return PredictionResponse(
         predicted_sales=round(prediction, 2),
         store_nbr=request.store_nbr,
         family=request.family,
-        date=request.date
+        date=request.date,
+        drift_warnings=drift_warnings,
     )
